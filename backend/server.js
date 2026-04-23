@@ -12,7 +12,7 @@ const swaggerUi = require("swagger-ui-express");
 const connectDb = require("./config/db");
 const app = express();
 
-app.use(securityHeaders());
+app.use(securityHeaders);
 app.use(sanitizeData);
 app.use(express.json());
 app.use("/api", limiter);
