@@ -2,5 +2,15 @@
   "name": "mern-template-source",
   "version": "1.0.0",
   "description": "Source files for the MERN template",
-  "private": true
+  "private": true,
+  "type": "module",
+  "bin": {
+    "create-mern": "./index.js"
+  },
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "commander": "^14.0.3",
+    "fs-extra": "^11.3.4",
+    "inquirer": "^13.4.2"
+  }
 }
