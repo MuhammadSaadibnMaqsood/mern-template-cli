@@ -54,6 +54,7 @@ export const scaffoldProject = async (answers) => {
       if (fs.existsSync(serverPath)) {
         let serverCode = fs.readFileSync(serverPath, 'utf8');
         // Remove redis connection logic
+        serverCode = serverCode.replace(/import\s*\{\s*connectRedis\s*\}\s*from\s*["']\.\/config\/redis\.js["'];?\s*/g, '');
         serverCode = serverCode.replace(/if\s*\(process\.env\.REDIS_URL\)\s*connectRedis\(\);\s*/g, '');
         fs.writeFileSync(serverPath, serverCode);
       }

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const connectDb = async () => {
   const connString =
@@ -14,4 +14,4 @@ const connectDb = async () => {
   }
 };
 
-module.exports = connectDb; // Don't forget to export!
+export default connectDb;
