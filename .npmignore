@@ -1,0 +1,9 @@
+.cursor/
+plan.txt
+**/node_modules/
+**/.git/
+phase3-test-app/
+phase3-test-openai/
+phase4-cli-check/
+boilerplate-check-noai/
+publish-check/

@@ -2,10 +2,31 @@
   "name": "mern-template-source",
   "version": "1.0.0",
   "description": "Source files for the MERN template",
-  "private": true,
+  "private": false,
   "type": "module",
+  "files": [
+    "index.js",
+    "scaffolder.js",
+    "backend/server.js",
+    "backend/package.json",
+    "backend/package-lock.json",
+    "backend/config",
+    "backend/controllers",
+    "backend/middleware",
+    "backend/models",
+    "backend/routes",
+    "backend/utils",
+    "frontend",
+    ".env.example",
+    "README.md"
+  ],
   "bin": {
-    "create-mern": "./index.js"
+    "mern-template": "index.js",
+    "create-mern": "index.js"
+  },
+  "scripts": {
+    "link-local": "npm link",
+    "unlink-local": "npm unlink -g mern-template"
   },
   "dependencies": {
     "chalk": "^5.6.2",

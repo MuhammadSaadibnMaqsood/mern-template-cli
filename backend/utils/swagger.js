@@ -9,6 +9,15 @@ const options = {
       description: "Auto-generated documentation for your MERN stack project",
     },
     servers: [{ url: "http://localhost:5000" }],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: "http",
+          scheme: "bearer",
+          bearerFormat: "JWT",
+        },
+      },
+    },
   },
   apis: ["./routes/*.js"], // Path to the API docs
 };

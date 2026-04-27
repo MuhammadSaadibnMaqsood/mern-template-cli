@@ -1,4 +1,0 @@
-{"sessionId":"06cae8","runId":"pre-fix","hypothesisId":"H1_H4","location":"backend/server.js:15","message":"Server bootstrap state","data":{"hasConnectRedisImport":false,"nodeVersion":"v24.11.0","hasFetch":true,"redisUrlPresent":false},"timestamp":1777285510946}
-{"sessionId":"06cae8","runId":"pre-fix","hypothesisId":"H1","location":"backend/server.js:24","message":"Before Redis connect branch","data":{"redisUrlPresent":false,"canCallConnectRedis":false},"timestamp":1777285510972}
-{"sessionId":"06cae8","runId":"pre-fix","hypothesisId":"H1_H4","location":"backend/server.js:15","message":"Server bootstrap state","data":{"hasConnectRedisImport":true,"nodeVersion":"v24.11.0","hasFetch":true,"redisUrlPresent":false},"timestamp":1777285802771}
-{"sessionId":"06cae8","runId":"pre-fix","hypothesisId":"H1","location":"backend/server.js:24","message":"Before Redis connect branch","data":{"redisUrlPresent":false,"canCallConnectRedis":true},"timestamp":1777285802808}

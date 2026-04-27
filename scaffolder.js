@@ -1,6 +1,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import chalk from 'chalk';
+import { execSync, spawnSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -64,8 +65,8 @@ export const scaffoldProject = async (answers) => {
         const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
         if (pkg.dependencies && pkg.dependencies.redis) {
           delete pkg.dependencies.redis;
-          fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
         }
+        fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2));
       }
     }
 
@@ -75,13 +76,64 @@ export const scaffoldProject = async (answers) => {
       if (fs.existsSync(openAiPath)) {
         fs.removeSync(openAiPath);
       }
+
+      const aiControllerPath = path.join(targetDir, 'backend', 'controllers', 'aiController.js');
+      if (fs.existsSync(aiControllerPath)) {
+        fs.removeSync(aiControllerPath);
+      }
+
+      const aiRoutesPath = path.join(targetDir, 'backend', 'routes', 'aiRoutes.js');
+      if (fs.existsSync(aiRoutesPath)) {
+        fs.removeSync(aiRoutesPath);
+      }
+
+      const serverPath = path.join(targetDir, 'backend', 'server.js');
+      if (fs.existsSync(serverPath)) {
+        let serverCode = fs.readFileSync(serverPath, 'utf8');
+        serverCode = serverCode.replace(/import\s+aiRoutes\s+from\s+["']\.\/routes\/aiRoutes\.js["'];?\s*/g, '');
+        serverCode = serverCode.replace(/app\.use\(["']\/api\/ai["'],\s*aiRoutes\);\s*/g, '');
+        fs.writeFileSync(serverPath, serverCode);
+      }
+    }
+
+    // 6. Dynamically shape backend package dependencies
+    const backendPkgPath = path.join(targetDir, 'backend', 'package.json');
+    if (fs.existsSync(backendPkgPath)) {
+      const backendPkg = JSON.parse(fs.readFileSync(backendPkgPath, 'utf8'));
+      backendPkg.dependencies = backendPkg.dependencies || {};
+      if (includeOpenAI) {
+        backendPkg.dependencies.openai = backendPkg.dependencies.openai || '^4.77.0';
+      } else {
+        delete backendPkg.dependencies.openai;
+      }
+      if (!includeRedis) {
+        delete backendPkg.dependencies.redis;
+      }
+      fs.writeFileSync(backendPkgPath, JSON.stringify(backendPkg, null, 2));
+    }
+
+    // 7. Automated setup: install dependencies and initialize git
+    const dirsWithPackageJson = [targetDir, path.join(targetDir, 'backend'), path.join(targetDir, 'frontend')]
+      .filter((dir) => fs.existsSync(path.join(dir, 'package.json')));
+
+    for (const dir of dirsWithPackageJson) {
+      execSync('npm install', { cwd: dir, stdio: 'inherit' });
+    }
+
+    if (!fs.existsSync(path.join(targetDir, '.git'))) {
+      execSync('git init', { cwd: targetDir, stdio: 'inherit' });
+    }
+
+    const mongoCheck = spawnSync('mongod', ['--version'], { stdio: 'ignore', shell: true });
+    if (mongoCheck.status !== 0) {
+      console.log(chalk.yellow('\n⚠️ MongoDB server was not detected on this machine.'));
+      console.log(chalk.yellow('   Install MongoDB Community Server or update MONGO_URI to a hosted database.'));
     }
 
     console.log(chalk.green(`\n✅ Success! Your project "${projectName}" is ready.`));
     console.log(chalk.cyan(`\nNext steps:`));
     console.log(chalk.white(`  cd ${projectName}`));
-    console.log(chalk.white(`  cd backend && npm install`));
-    console.log(chalk.white(`  cd ../frontend && npm install`));
+    console.log(chalk.white(`  npm run dev (inside backend)`));
 
   } catch (error) {
     console.error(chalk.red(`\n❌ Error scaffolding project: ${error.message}`));
